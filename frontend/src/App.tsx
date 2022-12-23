@@ -2,7 +2,7 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Room from "./pages/Room";
-import { SocketProvider } from "./socketContext";
+import { SocketProvider } from "./context/socketContext";
 
 function App() {
   return (

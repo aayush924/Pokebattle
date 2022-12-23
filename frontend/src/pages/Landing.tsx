@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { SocketContext } from "../socketContext";
+import { SocketContext } from "../context/socketContext";
 
 function Landing() {
-  const socket = useContext(SocketContext)
+  const { ctx } = useContext(SocketContext);
+  const socket = ctx.socket;
   const [roomId, setRoomId] = useState("");
   const nav = useNavigate();
 
@@ -18,23 +18,12 @@ function Landing() {
     nav(`/room/${roomId}`);
   };
 
-  const sendMessage = () => {
-    socket.emit("message", "Hello", roomId);
-
-  };
-
-  useEffect(() => {
-    socket && socket.on("message", (data: any) => {
-      console.log(data);
-    });
-  }, []);
   return (
     <div className="App">
       <h1>Socket.io Client</h1>
       <button onClick={createRoom}>Create Room</button>
       <button onClick={joinRoom}>Join Room</button>
-      <button onClick={sendMessage}>Send Message</button>
-      <input type="text" onChange={(e) => setRoomId(e.target.value)}/>
+      <input type="text" onChange={(e) => setRoomId(e.target.value)} />
     </div>
   );
 }

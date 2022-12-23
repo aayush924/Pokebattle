@@ -6,16 +6,14 @@ class ErrorResponse extends Error {
   }
 }
 
-
 const errorHandler = (err: ErrorResponse, req: any, res: any, next: any) => {
-    const { statusCode, message } = err;
-    res.status(statusCode).json({
-        status: "error",
-        statusCode,
-        message,
-    });
-    next();
-}
-  
-  module.exports = errorHandler;
+  const { statusCode, message } = err;
+  res.status(statusCode).json({
+    status: "error",
+    statusCode,
+    message,
+  });
+  next();
+};
 
+module.exports = errorHandler;
