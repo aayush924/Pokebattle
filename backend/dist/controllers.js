@@ -42,11 +42,13 @@ exports.getData = (req, res, next) => __awaiter(void 0, void 0, void 0, function
                 };
                 moves.push(filteredData);
             }
+            console.log(data.sprites);
             let poke = {
                 name: data.name,
                 id: data.id,
                 sprites: {
                     front_default: data.sprites.front_default,
+                    back_default: data.sprites.back_default,
                 },
                 stats: data.stats,
                 types: {

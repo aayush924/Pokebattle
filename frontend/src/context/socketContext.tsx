@@ -8,8 +8,8 @@ const initialState = {
   roomName: "",
   userPokemon: [],
   opponentPokemon: [],
-  userPokemonHealth: 0,
-  opponentPokemonHealth: 0,
+  userPokemonHealth: 200,
+  opponentPokemonHealth: 200,
   userPokemonCount: 0,
   opponentPokemonCount: 0,
   setRoomId: (roomId: string) => {},
@@ -35,11 +35,11 @@ export const SocketProvider = ({ children }: any) => {
     roomName: state.roomName,
     userPokemon: state.userPokemon,
     opponentPokemon: state.opponentPokemon,
+    setRoomId: roomHandler,
     userPokemonHealth: state.userPokemonHealth,
     opponentPokemonHealth: state.opponentPokemonHealth,
     userPokemonCount: state.userPokemonCount,
     opponentPokemonCount: state.opponentPokemonCount,
-    setRoomId: roomHandler
   }
 
   useEffect(() => {

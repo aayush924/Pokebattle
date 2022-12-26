@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "../context/socketContext";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import Lobby from "./Lobby";
+import BattleRoom from "./BattleRoom";
 
 function Room() {
   const { ctx, dispatch } = useContext(SocketContext);
@@ -11,6 +13,7 @@ function Room() {
   const [ready, setReady] = useState(false);
   const [gotPokemon, setGotPokemon] = useState(false);
   const [opponentReady, setOpponentReady] = useState(false);
+  const [battleStarted, setBattleStarted] = useState(false);
 
   const getPokemon = async () => {
     try {
@@ -19,6 +22,7 @@ function Room() {
       );
       setReady(true);
       dispatch({ type: "SET_USER_POKEMON", payload: response.data.data[0] });
+      dispatch({ type: "SET_USER_POKEMON_COUNT", payload: 1 });
       setGotPokemon(true);
       // gotPokemon();
     } catch (error) {
@@ -35,20 +39,53 @@ function Room() {
   socket.on("player2-joined", () => {
     setPlayer(1);
   });
-  console.log(player);
 
   // getters
   if (player === 1) {
     socket.on("player2-is-ready", (data: any) => {
       dispatch({ type: "SET_OPPONENT_POKEMON", payload: data.pokemon });
+      dispatch({ type: "SET_OPPONENT_POKEMON_HEALTH", payload: 200 });
+      dispatch({ type: "SET_OPPONENT_POKEMON_COUNT", payload: 1 });
       setOpponentReady(true);
     });
   } else {
     socket.on("player1-is-ready", (data: any) => {
       dispatch({ type: "SET_OPPONENT_POKEMON", payload: data.pokemon });
+      dispatch({ type: "SET_OPPONENT_POKEMON_HEALTH", payload: 200 });
+      dispatch({ type: "SET_OPPONENT_POKEMON_COUNT", payload: 1 });
       setOpponentReady(true);
     });
   }
+
+  const startBattle = () => {
+    setBattleStarted(true);
+  };
+
+  type DATA = {
+    roomId: any;
+    playerChance: number;
+    p1: {
+      health: number;
+      count: number;
+    };
+    p2: {
+      health: number;
+      count: number;
+    };
+  };
+
+  const data: DATA = {
+    roomId: roomId,
+    playerChance: 1,
+    p1: {
+      health: ctx.userPokemonHealth,
+      count: ctx.userPokemonCount,
+    },
+    p2: {
+      health: ctx.opponentPokemonHealth,
+      count: ctx.opponentPokemonCount,
+    },
+  };
 
   useEffect(() => {
     ctx.setRoomId(roomId);
@@ -56,35 +93,29 @@ function Room() {
 
   return (
     <div>
-      <h1>Room: {roomId}</h1>
-      {ready ? (
-        <button
-          onClick={() => {
-            if (player == 2) {
-              socket.emit("player2-clicked-ready", pokeData);
-            } else {
-              socket.emit("player1-clicked-ready", pokeData);
-            }
-          }}
-        >
-          Ready?
-        </button>
+      {battleStarted ? (
+        <BattleRoom
+          ctx={ctx}
+          socket={socket}
+          roomId={roomId}
+          player={player}
+          data={data}
+          dispatch={dispatch}
+        />
       ) : (
-        <button onClick={getPokemon}>Get Pokemon</button>
+        <Lobby
+          ctx={ctx}
+          socket={socket}
+          roomId={roomId}
+          player={player}
+          ready={ready}
+          gotPokemon={gotPokemon}
+          opponentReady={opponentReady}
+          getPokemon={getPokemon}
+          startBattle={startBattle}
+          pokeData={pokeData}
+        />
       )}
-      <div>
-        <h1>Player: {player}</h1>
-        <div>
-          <h1>Your Pokemon</h1>
-          {gotPokemon && <img src={ctx.userPokemon?.sprites.front_default} />}
-        </div>
-        <div>
-          <h1>Opponent Pokemon</h1>
-          {opponentReady && (
-            <img src={ctx.opponentPokemon?.sprites.front_default} />
-          )}
-        </div>
-      </div>
     </div>
   );
 }

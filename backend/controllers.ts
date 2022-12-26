@@ -24,6 +24,7 @@ type Pokemon = {
   id: number;
   sprites: {
     front_default: string;
+    back_default: string;
   };
   stats: {
     base_stat: number;
@@ -62,18 +63,20 @@ exports.getData = async (req: any, res: any, next: any) => {
         };
         moves.push(filteredData);
       }
+      console.log(data.sprites);
       let poke = {
         name: data.name,
         id: data.id,
         sprites: {
           front_default: data.sprites.front_default,
+          back_default: data.sprites.back_default,
         },
         stats: data.stats,
         types: {
           type: {
             name: data.types[0].type.name,
           },
-        }, 
+        },
         moves: moves,
       };
       pokemon.push(poke);

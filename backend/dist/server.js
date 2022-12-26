@@ -48,6 +48,9 @@ io.on("connection", (socket) => {
     socket.on("player1-clicked-ready", (pokeData) => {
         socket.to(pokeData.roomId).emit("player1-is-ready", pokeData);
     });
+    socket.on("attack", (data, attack) => {
+        socket.to(data.roomId).emit("complete-turn", data, attack);
+    });
 });
 pokeServer.listen(8000, () => {
     console.log("port: 8000");
