@@ -50,8 +50,13 @@ io.on("connection", (socket) => {
     socket.to(pokeData.roomId).emit("player1-is-ready", pokeData);
   });
 
-  socket.on("attack", (data: any,attack:any) => {
-    socket.to(data.roomId).emit("complete-turn", data,attack);
+  socket.on("attack", (data: any, attack: any) => {
+    socket.to(data.roomId).emit("complete-turn", data, attack);
+  });
+
+  socket.on("defeated", (data:any) => {
+    console.log("defeated", data.roomId, data.winner);
+    socket.broadcast.to(data.roomId).emit("over", data.winner);
   });
 });
 

@@ -42,7 +42,6 @@ exports.getData = (req, res, next) => __awaiter(void 0, void 0, void 0, function
                 };
                 moves.push(filteredData);
             }
-            console.log(data.sprites);
             let poke = {
                 name: data.name,
                 id: data.id,

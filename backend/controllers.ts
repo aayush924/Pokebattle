@@ -63,7 +63,6 @@ exports.getData = async (req: any, res: any, next: any) => {
         };
         moves.push(filteredData);
       }
-      console.log(data.sprites);
       let poke = {
         name: data.name,
         id: data.id,
