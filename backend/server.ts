@@ -42,6 +42,12 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("leave-room", (data: any) => {
+    socket.leave(data.roomName);
+    console.log(socket.id, "left room", data.roomName);
+    socket.to(data.roomName).emit("player: ", data.player);
+  });
+
   socket.on("player2-clicked-ready", (pokeData: any) => {
     socket.to(pokeData.roomId).emit("player2-is-ready", pokeData);
   });
@@ -54,7 +60,7 @@ io.on("connection", (socket) => {
     socket.to(data.roomId).emit("complete-turn", data, attack);
   });
 
-  socket.on("defeated", (data:any) => {
+  socket.on("defeated", (data: any) => {
     console.log("defeated", data.roomId, data.winner);
     socket.broadcast.to(data.roomId).emit("over", data.winner);
   });

@@ -1,9 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import NavBar from "./NavBar";
 
 function BattleRoom({ ctx, socket, roomId, player, data, dispatch }: any) {
   const [playerChance, setPlayerChance] = React.useState(data.playerChance);
   const [over, setOver] = React.useState(false);
   const [victory, setVictory] = React.useState("");
+  const nav = useNavigate();
 
   socket.on("over", (player: number) => {
     if (player == 1) {
@@ -141,6 +144,14 @@ function BattleRoom({ ctx, socket, roomId, player, data, dispatch }: any) {
           <>
             <h1>Game Over</h1>
             <div>{victory}</div>
+            <button
+              onClick={() => {
+                socket.emit("leave-room", { roomName: roomId, player });
+                nav("/");
+              }}
+            >
+              Leave Room
+            </button>
           </>
         ) : (
           <>

@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Lobby from "./Lobby";
 import BattleRoom from "./BattleRoom";
+import NavBar from "./NavBar";
 
 function Room() {
   const { ctx, dispatch } = useContext(SocketContext);
@@ -14,6 +15,7 @@ function Room() {
   const [gotPokemon, setGotPokemon] = useState(false);
   const [opponentReady, setOpponentReady] = useState(false);
   const [battleStarted, setBattleStarted] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const getPokemon = async () => {
     try {
@@ -24,7 +26,6 @@ function Room() {
       dispatch({ type: "SET_USER_POKEMON", payload: response.data.data[0] });
       dispatch({ type: "SET_USER_POKEMON_COUNT", payload: 1 });
       setGotPokemon(true);
-      // gotPokemon();
     } catch (error) {
       console.log(error);
     }
@@ -93,6 +94,7 @@ function Room() {
 
   return (
     <div>
+      <NavBar isRoom={roomId}/>
       {battleStarted ? (
         <BattleRoom
           ctx={ctx}

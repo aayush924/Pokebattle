@@ -42,6 +42,11 @@ io.on("connection", (socket) => {
             socket.emit("room-full");
         }
     });
+    socket.on("leave-room", (data) => {
+        socket.leave(data.roomName);
+        console.log(socket.id, "left room", data.roomName);
+        socket.to(data.roomName).emit("player: ", data.player);
+    });
     socket.on("player2-clicked-ready", (pokeData) => {
         socket.to(pokeData.roomId).emit("player2-is-ready", pokeData);
     });
