@@ -137,7 +137,6 @@ function BattleRoom({ ctx, socket, roomId, player, data, dispatch }: any) {
 
   return (
     <div>
-      <h1>Room: {roomId}</h1>
       <h1>Player: {player}</h1>
       <div>
         {over ? (

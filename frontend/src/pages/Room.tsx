@@ -11,25 +11,9 @@ function Room() {
   const socket = ctx.socket;
   const { roomId } = useParams<{ roomId: string }>();
   const [player, setPlayer] = useState(2);
-  const [ready, setReady] = useState(false);
-  const [gotPokemon, setGotPokemon] = useState(false);
+  // const [disableReady, setDisableReady] = useState(true);
   const [opponentReady, setOpponentReady] = useState(false);
   const [battleStarted, setBattleStarted] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  const getPokemon = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:8000/api/v1/pokeBattle/getData"
-      );
-      setReady(true);
-      dispatch({ type: "SET_USER_POKEMON", payload: response.data.data[0] });
-      dispatch({ type: "SET_USER_POKEMON_COUNT", payload: 1 });
-      setGotPokemon(true);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const pokeData = {
     pokemon: ctx.userPokemon,
@@ -37,11 +21,12 @@ function Room() {
     player: player,
   };
 
+  //  chnage this so that only once the player 2 joins the room, the player 1 can click ready vice versa
   socket.on("player2-joined", () => {
     setPlayer(1);
+    // setDisableReady(false);
   });
 
-  // getters
   if (player === 1) {
     socket.on("player2-is-ready", (data: any) => {
       dispatch({ type: "SET_OPPONENT_POKEMON", payload: data.pokemon });
@@ -57,10 +42,6 @@ function Room() {
       setOpponentReady(true);
     });
   }
-
-  const startBattle = () => {
-    setBattleStarted(true);
-  };
 
   type DATA = {
     roomId: any;
@@ -94,30 +75,27 @@ function Room() {
 
   return (
     <div>
-      <NavBar isRoom={roomId}/>
-      {battleStarted ? (
-        <BattleRoom
-          ctx={ctx}
-          socket={socket}
-          roomId={roomId}
-          player={player}
-          data={data}
-          dispatch={dispatch}
-        />
-      ) : (
-        <Lobby
-          ctx={ctx}
-          socket={socket}
-          roomId={roomId}
-          player={player}
-          ready={ready}
-          gotPokemon={gotPokemon}
-          opponentReady={opponentReady}
-          getPokemon={getPokemon}
-          startBattle={startBattle}
-          pokeData={pokeData}
-        />
-      )}
+      <NavBar isRoom={roomId} />
+      <div className="wrapper">
+        {battleStarted ? (
+          <BattleRoom
+            ctx={ctx}
+            socket={socket}
+            roomId={roomId}
+            player={player}
+            data={data}
+            dispatch={dispatch}
+          />
+        ) : (
+          <Lobby  
+            roomId={roomId}
+            player={player}
+            opponentReady={opponentReady}
+            startBattle={() => setBattleStarted(true)}
+            pokeData={pokeData}
+          />
+        )}
+      </div>
     </div>
   );
 }

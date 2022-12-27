@@ -1,16 +1,22 @@
-import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
-function Loading({ isOpen }: any) {
+function Loading() {
   return (
-    <div>
-      <Backdrop open={isOpen}>
-        <CircularProgress
-          sx={{
-            color: "#DF593A",
-          }}
-        />
-      </Backdrop>
+    <div className="card">
+      <p
+        style={{
+          fontSize: "20px",
+          fontFamily: "Poppins",
+          fontWeight: "bold",
+        }}
+      >
+        Fetching Pokemon
+      </p>
+      <CircularProgress
+        sx={{
+          color: "#DF593A",
+        }}
+      />
     </div>
   );
 }

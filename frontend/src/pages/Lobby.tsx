@@ -1,5 +1,10 @@
 import Button from "@mui/material/Button";
 import { useState } from "react";
+import Loading from "./Loading";
+import axios from "axios";
+import { useContext } from "react";
+import { SocketContext } from "../context/socketContext";
+import PokeCard from "./PokeCard";
 
 const ButtonStyle = {
   backgroundColor: "#DF593A",
@@ -33,60 +38,111 @@ const OButtonStyle = {
   },
 };
 
-function Lobby({
-  ctx,
-  socket,
-  player,
-  ready,
-  gotPokemon,
-  opponentReady,
-  getPokemon,
-  startBattle,
-  pokeData,
-}: any) {
+function Lobby({ player, opponentReady, startBattle, pokeData }: any) {
+  const { ctx, dispatch } = useContext(SocketContext);
+  const socket = ctx.socket;
+  const [ready, setReady] = useState(false);
   const [clickedReady, setClickedReady] = useState(false);
   console.log(ctx.opponentPokemon.length);
-  
+  const [fetching, setFetching] = useState(false);
+  const [gotPokemon, setGotPokemon] = useState(false);
+
+  const getPokemon = async () => {
+    try {
+      setFetching(true);
+      const response = await axios.get(
+        "http://localhost:8000/api/v1/pokeBattle/getData"
+      );
+      setReady(true);
+      dispatch({ type: "SET_USER_POKEMON", payload: response.data.data[0] });
+      dispatch({ type: "SET_USER_POKEMON_COUNT", payload: 1 });
+      setGotPokemon(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  console.log(ctx.userPokemon);
+
   return (
-    <div className="lobby_cards">
-      {ready ? (
-        <>
-          {!clickedReady && (
-            <Button
-              onClick={() => {
-                if (player == 2) {
-                  socket.emit("player2-clicked-ready", pokeData);
-                  setClickedReady(true);
-                } else {
-                  socket.emit("player1-clicked-ready", pokeData);
-                  setClickedReady(true);
-                }
-              }}
-              sx={OButtonStyle}
-              variant="outlined"
-            >
-              Ready?
-            </Button>
-          )}
-        </>
-      ) : (
-        <Button onClick={getPokemon} sx={OButtonStyle} variant="outlined">
-          Get Pokemon
-        </Button>
-      )}
-      <div className="layout">
-        <div className="card">
-          <h1>Your Pokemon</h1>
-          {gotPokemon && <img src={ctx.userPokemon?.sprites.front_default} />}
+    <>
+      <div className="lobby_cards">
+        {ready ? (
+          <>
+            {!clickedReady ? (
+              <Button
+                onClick={() => {
+                  if (player == 2) {
+                    socket.emit("player2-clicked-ready", pokeData);
+                    setClickedReady(true);
+                  } else {
+                    socket.emit("player1-clicked-ready", pokeData);
+                    setClickedReady(true);
+                  }
+                }}
+                sx={OButtonStyle}
+                variant="outlined"
+                // disabled={disableReady}
+              >
+                Ready?
+              </Button>
+            ) : (
+              <div
+                style={{
+                  margin: "10px",
+                  width: "200px",
+                  height: "50px",
+                }}
+              ></div>
+            )}
+          </>
+        ) : (
+          <Button onClick={getPokemon} sx={OButtonStyle} variant="outlined">
+            Get Pokemon
+          </Button>
+        )}
+        <div className="layout">
+          <div className="card">
+            {fetching ? (
+              <>
+                {gotPokemon ? (
+                  <PokeCard pokemon={ctx.userPokemon} />
+                ) : (
+                  <Loading />
+                )}
+              </>
+            ) : (
+              <>
+                <div>
+                  <h2>Your Pokemon</h2>
+                  click the button to get your pokemon
+                </div>
+              </>
+            )}
+          </div>
+          VS
+          <div className="card">
+            {opponentReady ? (
+              <PokeCard pokemon={ctx.opponentPokemon} />
+            ) : (
+              <div>
+                <h2>Opponent Pokemon</h2>
+              </div>
+            )}
+          </div>
         </div>
-        <div className="card">
-          <h1>Opponent</h1>
-          {opponentReady && (
-            <img src={ctx.opponentPokemon?.sprites.front_default} />
-          )}
-        </div>
-      </div>
-      <div>
+      </div>{" "}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "0",
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginBottom: "2rem",
+        }}
+      >
         <Button
           onClick={startBattle}
           variant="contained"
@@ -96,7 +152,7 @@ function Lobby({
           Start Battle
         </Button>
       </div>
-    </div>
+    </>
   );
 }
 

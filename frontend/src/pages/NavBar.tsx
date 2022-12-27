@@ -10,7 +10,7 @@ function NavBar({ isRoom }: any) {
     setCopied(true);
     setTimeout(() => {
       setCopied(false);
-    }, 2000);
+    }, 1500);
   };
   return (
     <div className="navbar">

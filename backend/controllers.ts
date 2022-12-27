@@ -36,7 +36,7 @@ type Pokemon = {
     type: {
       name: string;
     };
-  };
+  }[];
   moves: Moves[];
 };
 
@@ -71,11 +71,7 @@ exports.getData = async (req: any, res: any, next: any) => {
           back_default: data.sprites.back_default,
         },
         stats: data.stats,
-        types: {
-          type: {
-            name: data.types[0].type.name,
-          },
-        },
+        types: data.types,
         moves: moves,
       };
       pokemon.push(poke);

@@ -50,11 +50,7 @@ exports.getData = (req, res, next) => __awaiter(void 0, void 0, void 0, function
                     back_default: data.sprites.back_default,
                 },
                 stats: data.stats,
-                types: {
-                    type: {
-                        name: data.types[0].type.name,
-                    },
-                },
+                types: data.types,
                 moves: moves,
             };
             pokemon.push(poke);
