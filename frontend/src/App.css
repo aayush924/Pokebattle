@@ -101,7 +101,6 @@ body {
   gap: 1rem;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
   transition: all 0.2s ease;
-  
 }
 
 .layout {
@@ -173,7 +172,6 @@ body {
   padding: 0.7rem;
   border-radius: 0.5rem;
   background-color: #d79485;
-
 }
 
 .table_item {
@@ -181,3 +179,24 @@ body {
   font-size: 1rem;
   font-weight: bold;
 }
+
+/* write health bar css */
+.healthbar {
+  height: 1rem;
+  width: 10rem;
+  background-color: #d79485;
+  border-radius: 0.5rem;
+  display: flex;
+  z-index: 0;
+
+}
+
+.healthbar_health {
+  height: 100%;
+  background-color: green;
+  border-radius: 0.5rem;
+  display: flex;
+  transition: width 0.2s ease;
+  z-index: 1;
+}
+

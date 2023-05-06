@@ -1,6 +1,20 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import NavBar from "./NavBar";
+import Moveset from "./Moveset";
+
+function HealthBar({ health }: any) {
+  console.log(health);
+
+  let healthPercentage = health - (health / 200) * 100;
+  return (
+    <div className="healthbar">
+      <div
+        className="healthbar_health"
+        style={{ width: `${healthPercentage}%` }}
+      ></div>
+    </div>
+  );
+}
 
 function BattleRoom({ ctx, socket, roomId, player, data, dispatch }: any) {
   const [playerChance, setPlayerChance] = React.useState(data.playerChance);
@@ -154,33 +168,30 @@ function BattleRoom({ ctx, socket, roomId, player, data, dispatch }: any) {
           </>
         ) : (
           <>
-            <div>
+            <div className="user">
               {ctx.userPokemon && (
                 <div>
                   <img src={ctx.userPokemon?.sprites.back_default} />
-                  health: {ctx.userPokemonHealth}
+                  <HealthBar health={ctx.userPokemonHealth} />
                 </div>
               )}
             </div>
-            <div>
+            <div className="opponent">
               {ctx.opponentPokemon && (
                 <div>
                   <img src={ctx.opponentPokemon?.sprites.front_default} />
-                  health: {ctx.opponentPokemonHealth}
+                  <HealthBar health={ctx.opponentPokemonHealth} />
                 </div>
               )}
             </div>
             <div>
               {playerChance == player ? (
-                <button
-                  onClick={() => {
-                    attackHandler(100);
-                  }}
-                >
-                  Attack
-                </button>
+                // <Moveset />
+                <div>
+                  <button onClick={() => attackHandler(50)}>Attack</button>
+                </div>
               ) : (
-                <div>Waiting for opponent</div>
+                <div>Waiting for opponent ...</div>
               )}
             </div>
           </>

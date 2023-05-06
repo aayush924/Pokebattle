@@ -55,6 +55,7 @@ function Lobby({ player, opponentReady, startBattle, pokeData }: any) {
       );
       setReady(true);
       dispatch({ type: "SET_USER_POKEMON", payload: response.data.data[0] });
+      dispatch({ type: "SET_USER_POKEMON_HEALTH", payload: 200 });
       dispatch({ type: "SET_USER_POKEMON_COUNT", payload: 1 });
       setGotPokemon(true);
     } catch (error) {
